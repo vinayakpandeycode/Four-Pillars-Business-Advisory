@@ -1,99 +1,26 @@
-'use client'
+"use client"
 
-import { FormEvent, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from "react"
 
-const logo = '/assets/four-pillars-meraki-logo.jpeg'
-const videoSrc = '/assets/meraki-walkthrough.mp4'
+const videoSrc = "/assets/meraki-walkthrough.mp4"
+const logo = "/assets/four-pillars-meraki-logo.jpeg"
+const services = [["01", "Strategic Consulting", "Strategic direction, commercial positioning and decision support for businesses entering or expanding within new markets."], ["02", "Cross-Border Market Entry", "Market intelligence, local positioning and practical support for businesses establishing a presence in new regions."], ["03", "Strategic Partnerships", "Connecting businesses with relevant partners, stakeholders and decision-makers to accelerate opportunity."], ["04", "Business Expansion & Scaling", "Helping established businesses identify new markets, partnerships and scalable growth opportunities."], ["05", "Opportunity & Investment Advisory", "Identifying relevant commercial and real estate opportunities and helping clients evaluate the path forward."], ["06", "Network & Market Access", "Access to relevant market relationships, business networks and local opportunity ecosystems."]]
+const stages = [["01", "Targeted ambition", "Define the objective, market and desired outcome."], ["02", "Market intelligence", "Understand the market, opportunity landscape and commercial environment."], ["03", "Trusted network", "Identify the right relationships, partners and decision-makers."], ["04", "Flawless execution", "Translate strategy into action and measurable progress."]]
+const sectors = [["01", "Education", "Market development, partnerships and expansion opportunities across education ecosystems."], ["02", "Real Estate", "Strategic access to real estate opportunities, developments and market relationships."], ["03", "Hospitality", "Commercial growth, market entry and strategic partnerships across hospitality."], ["04", "Food & Consumer Products", "Market access, distribution relationships and expansion opportunities."]]
+const markets = [["GCC", "A strategic gateway for businesses seeking regional expansion and commercial opportunity."], ["South Asia", "A high-growth ecosystem connecting talent, enterprise and emerging opportunities."], ["Africa", "A diverse landscape of developing markets and long-term commercial potential."], ["Australia", "A mature market offering opportunities for international collaboration and expansion."]]
 
-const pillars = [
-  ['01', 'Strategy', 'Clarity before action. We define the decisions, priorities and path that move your business forward.'],
-  ['02', 'Structure', 'The operating rhythm, governance and systems that make ambition repeatable.'],
-  ['03', 'Capital', 'Disciplined thinking around resources, investment and sustainable value creation.'],
-  ['04', 'Legacy', 'Building institutions, places and brands that endure beyond the next quarter.'],
-]
-const services = ['Strategic Consulting', 'Cross-Border Market Entry', 'Strategic Partnerships', 'Business Expansion & Scaling', 'Opportunity & Investment Advisory', 'Network & Market Access']
+function VideoHero() {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [playing, setPlaying] = useState(false)
+  const [muted, setMuted] = useState(true)
+  const [menuOpen, setMenuOpen] = useState(false)
+  useEffect(() => { const video = videoRef.current; if (!video) return; const onPlaying = () => setPlaying(true); const onPause = () => setPlaying(false); video.addEventListener("playing", onPlaying); video.addEventListener("pause", onPause); video.play().catch(() => setPlaying(false)); return () => { video.removeEventListener("playing", onPlaying); video.removeEventListener("pause", onPause) } }, [])
+  const togglePlayback = () => { const video = videoRef.current; if (!video) return; if (video.paused) video.play().catch(() => undefined); else video.pause() }
+  const toggleSound = () => { const video = videoRef.current; if (!video) return; video.muted = !video.muted; video.volume = video.muted ? 0 : 1; setMuted(video.muted) }
+  const closeMenu = () => setMenuOpen(false)
+  return <section className="hero" id="top"><video ref={videoRef} className="hero-video" src={videoSrc} autoPlay muted={muted} loop playsInline preload="auto" aria-label="Meraki architectural walkthrough" /><div className="hero-wash" /><header className="site-header"><a href="#top" className="brand-logo" aria-label="Four Pillars Business Advisory home"><img src={logo} alt="Four Pillars Business Advisory" /></a><button className="menu-toggle" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span /><span /></button><nav className={menuOpen ? "nav-links is-open" : "nav-links"} aria-label="Primary navigation"><a href="#about" onClick={closeMenu}>About</a><a href="#services" onClick={closeMenu}>Services</a><a href="#real-estate" onClick={closeMenu}>Real Estate</a><a href="#projects" onClick={closeMenu}>Projects</a><a className="nav-cta" href="#contact" onClick={closeMenu}>Schedule a Consultation</a></nav></header><div className="hero-content"><p className="eyebrow light">Four Pillars Business Advisory <span>· Dubai · Global Reach</span></p><h1>Connecting Markets.<br /><em>Creating Opportunities.</em><br />Scaling Businesses.</h1><div className="hero-bottom"><p>Four Pillars Business Advisory connects businesses, investors and strategic opportunities across high-growth markets — with a focus on market entry, partnerships, expansion and real estate.</p><div className="hero-actions"><a className="button button-gold" href="#about">Explore our approach</a><a className="button button-ghost" href="#contact">Schedule a consultation</a></div></div></div><div className="media-controls"><button aria-label={playing ? "Pause background video" : "Play background video"} onClick={togglePlayback}>{playing ? "PAUSE" : "PLAY"}</button><button aria-label={muted ? "Turn sound on" : "Turn sound off"} onClick={toggleSound}>{muted ? "SOUND OFF" : "SOUND ON"}</button></div><div className="scroll-cue">Scroll to explore <span>↓</span></div></section>
+}
 
 export default function Page() {
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [muted, setMuted] = useState(true)
-  const [playing, setPlaying] = useState(true)
-  const [sent, setSent] = useState(false)
-
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
-    const onPlaying = () => setPlaying(true)
-    const onPause = () => setPlaying(false)
-    const retryPlayback = () => {
-      video.play().catch(() => setPlaying(false))
-    }
-    video.addEventListener('playing', onPlaying)
-    video.addEventListener('pause', onPause)
-    video.addEventListener('pointerdown', retryPlayback, { once: true })
-    video.play().catch(() => setPlaying(false))
-    return () => {
-      video.removeEventListener('playing', onPlaying)
-      video.removeEventListener('pause', onPause)
-      video.removeEventListener('pointerdown', retryPlayback)
-    }
-  }, [])
-
-  const togglePlayback = () => {
-    const video = videoRef.current
-    if (!video) return
-    if (video.paused) video.play().catch(() => setPlaying(false))
-    else video.pause()
-  }
-  const toggleSound = () => {
-    const video = videoRef.current
-    if (!video) return
-    const nextMuted = !video.muted
-    video.muted = nextMuted
-    video.volume = nextMuted ? 0 : 1
-    setMuted(video.muted)
-  }
-  const submit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setSent(true)
-  }
-
-  return (
-    <main className="site-shell">
-      <section className="hero" id="top">
-        <video ref={videoRef} className="hero-video" autoPlay muted={muted} loop playsInline preload="auto" aria-label="Abstract architectural motion background">
-          <source src={videoSrc} type="video/mp4" />
-        </video>
-        <div className="hero-wash" />
-        <header className="site-header">
-          <a href="#top" className="brand-logo" aria-label="Four Pillars Business Advisory home"><img src={logo} alt="Four Pillars Business Advisory" /></a>
-          <nav className={menuOpen ? 'nav-links is-open' : 'nav-links'} aria-label="Primary navigation">
-            <a href="#approach" onClick={() => setMenuOpen(false)}>About</a><a href="#services" onClick={() => setMenuOpen(false)}>Services</a><a href="#real-estate" onClick={() => setMenuOpen(false)}>Real Estate</a><a href="#projects" onClick={() => setMenuOpen(false)}>Projects</a><a href="#contact" onClick={() => setMenuOpen(false)}>Schedule a Consultation</a>
-          </nav>
-          <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen}>{menuOpen ? 'CLOSE' : 'MENU'}</button>
-        </header>
-        <div className="hero-content">
-          <p className="eyebrow">Business advisory / Dubai · UAE</p>
-          <h1>Connecting markets.<br /><em>Creating opportunities.</em><br />Scaling businesses.</h1>
-          <div className="hero-bottom"><p>Independent thinking for leaders building what comes next.</p><a className="text-link" href="#approach">Discover our approach <span>↘</span></a></div>
-        </div>
-        <div className="media-controls"><button aria-label={playing ? 'Pause background video' : 'Play background video'} onClick={togglePlayback}>{playing ? 'PAUSE' : 'PLAY'}</button><button aria-label={muted ? 'Turn sound on' : 'Turn sound off'} onClick={toggleSound}>{muted ? 'SOUND OFF' : 'SOUND ON'}</button></div>
-        <div className="scroll-cue">Scroll to explore <span>↓</span></div>
-      </section>
-
-      <section className="intro section-ivory" id="approach"><div className="section-index">01 / 04</div><div className="intro-copy"><p className="eyebrow gold">A considered perspective</p><h2>Business is a long game.<br /><em>We think in chapters.</em></h2><p className="large-copy">Four Pillars Business Advisory is an independent partner to founders, families and institutions navigating moments of consequence.</p><p>We bring structure to complexity, context to decisions and a clear point of view to every engagement. Our work is deliberately senior, deeply considered and built around one idea: meaningful progress compounds.</p><a className="outline-button" href="#contact">Start a conversation <span>↗</span></a></div></section>
-
-      <section className="pillars section-green" id="pillars"><div className="section-heading"><p className="eyebrow gold">Our framework</p><h2>Four ways to<br /><em>move forward.</em></h2></div><div className="pillar-list">{pillars.map(([number, title, copy]) => <article className="pillar" key={number}><span className="pillar-number">{number}</span><div><h3>{title}</h3><p>{copy}</p></div><span className="pillar-arrow">↗</span></article>)}</div></section>
-
-      <section className="services section-ivory" id="services"><div className="section-heading"><p className="eyebrow gold">What we do</p><h2>Advice with<br /><em>intent.</em></h2></div><div className="service-list">{services.map((service, index) => <a href="#contact" className="service-row" key={service}><span>0{index + 1}</span><strong>{service}</strong><span>↗</span></a>)}</div></section>
-
-      <section className="meraki section-dark" id="projects"><div className="meraki-image"><img src={logo} alt="Meraki and Four Pillars collaboration mark" /></div><div className="meraki-copy"><p className="eyebrow gold">A collaboration in place</p><h2>Meraki <span>×</span><br /><em>Four Pillars</em></h2><p>Two perspectives, one shared ambition: to create spaces that are considered, enduring and unmistakably their own.</p><a className="text-link" href="#contact">Explore the dossier <span>↗</span></a></div></section>
-
-      <section className="markets section-ivory" id="real-estate"><div><p className="eyebrow gold">A regional point of view</p><h2>Rooted in Dubai.<br /><em>Open to the world.</em></h2></div><div className="market-copy"><p>We work across the Gulf and with international partners whose ambitions bring them here. Local context, global standards and a practical understanding of how opportunity takes shape.</p><div className="market-lines"><span>Dubai</span><span>Abu Dhabi</span><span>Riyadh</span><span>London</span></div></div></section>
-
-      <section className="contact section-green" id="contact"><div className="contact-heading"><p className="eyebrow gold">Make an enquiry</p><h2>Let&apos;s make<br /><em>it meaningful.</em></h2><p>Tell us a little about where you are and where you want to go.</p></div>{sent ? <div className="form-success"><span>Thank you.</span><p>Your enquiry has been received. We&apos;ll be in touch shortly.</p></div> : <form onSubmit={submit}><label>Name<input required name="name" placeholder="Your name" /></label><label>Email<input required type="email" name="email" placeholder="you@company.com" /></label><label>How can we help?<textarea required name="message" placeholder="A little about your enquiry" rows={3} /></label><button className="solid-button" type="submit">Send enquiry <span>↗</span></button></form>}</section>
-
-      <footer><a href="#top" className="brand-logo footer-mark" aria-label="Four Pillars Business Advisory home"><img src={logo} alt="Four Pillars Business Advisory" /></a><div className="footer-details"><p>Business Advisory<br />Dubai · UAE</p><a href="mailto:hello@fourpillars.ae">hello@fourpillars.ae</a><a href="https://fourpillars.ae">fourpillars.ae</a></div><p className="copyright">© {new Date().getFullYear()} Four Pillars Business Advisory</p></footer>
-    </main>
-  )
+  return <main><VideoHero /><section className="intro section-ivory" id="about"><div className="section-number">01 / ABOUT FOUR PILLARS</div><div className="intro-grid"><h2>Where strategy meets <em>opportunity.</em></h2><div className="intro-copy"><p>Four Pillars Business Advisory helps businesses navigate new markets, build strategic relationships and identify opportunities for sustainable growth.</p><p>We work across business advisory, market entry, strategic partnerships, expansion and real estate — connecting the right people, markets and opportunities to create meaningful outcomes.</p><div className="market-line"><span>Markets</span><b>GCC / South Asia / Africa / Australia</b></div></div></div></section><section className="positioning section-dark"><p className="eyebrow">Our focus</p><h2>Four pillars for the next <em>chapter.</em></h2><div className="metric-grid">{[["01", "Market entry"], ["02", "Strategic partnerships"], ["03", "Business expansion"], ["04", "Real estate opportunities"]].map(([n, t]) => <div className="metric" key={n}><span>{n}</span><strong>{t}</strong></div>)}</div></section><section className="services section-ivory" id="services"><div className="section-number">02 / OUR SERVICES</div><div className="section-heading"><h2>Advisory built around your <em>next move.</em></h2><p>Clear thinking, relevant access and practical momentum for leaders operating across borders.</p></div><div className="service-list">{services.map(([n, title, text]) => <article className="service-row" key={n}><span className="row-number">{n}</span><div><h3>{title}</h3><p>{text}</p></div><span className="row-arrow">↘</span></article>)}</div></section><section className="approach section-dark" id="approach"><div className="section-number">03 / OUR APPROACH</div><div className="section-heading"><h2>From ambition to <em>execution.</em></h2><p>Every engagement begins with a clear objective, then moves through intelligence, relationships and disciplined execution.</p></div><div className="stage-grid">{stages.map(([n, title, text]) => <article className="stage" key={n}><span>{n}</span><h3>{title}</h3><p>{text}</p></article>)}</div></section><section className="sectors section-ivory"><div className="section-number">04 / SECTORS</div><div className="section-heading"><h2>Built around sectors with <em>room to grow.</em></h2></div><div className="editorial-grid">{sectors.map(([n, title, text]) => <article key={n}><span>{n}</span><h3>{title}</h3><p>{text}</p></article>)}</div></section><section className="markets section-dark"><div className="section-number">05 / MARKETS</div><div className="section-heading"><h2>Connecting businesses across <em>high-growth markets.</em></h2></div><div className="market-grid">{markets.map(([title, text]) => <article key={title}><h3>{title}</h3><p>{text}</p></article>)}</div></section><section className="collaboration section-ivory" id="projects"><div className="collab-image"><img src={logo} alt="Meraki and Four Pillars collaboration" /></div><div className="collab-copy"><div className="section-number">06 / STRATEGIC COLLABORATION</div><h2>Two perspectives.<br /><em>One stronger opportunity.</em></h2><p>Four Pillars Business Advisory collaborates with Meraki to bring together strategic business advisory, market access and real estate opportunity.</p><p>The collaboration is designed around creating stronger pathways between businesses, markets and investment opportunities.</p><a className="text-link dark-link" href="#contact">Explore the collaboration <span>↘</span></a></div></section><section className="real-estate section-dark" id="real-estate"><div className="section-number">07 / REAL ESTATE</div><div className="real-estate-head"><h2>Opportunities worth<br /><em>looking closer at.</em></h2><p>A considered approach to real estate opportunity, market context and the relationships that move projects forward.</p></div><article className="project-feature"><div className="project-visual"><div><span>Project 01</span><strong>Nirvana<br /><em>Residences I</em></strong><small>Dubai / Me&apos;aisem</small></div></div><div className="project-facts"><p className="eyebrow">Featured project</p><h3>Nirvana Residences I</h3><p>A premium residential development in Dubai&apos;s Me&apos;aisem district, presented as an opportunity to look at with context, care and a clear understanding of the market.</p><dl><div><dt>Location</dt><dd>Dubai, Me&apos;aisem</dd></div><div><dt>Category</dt><dd>Residential real estate</dd></div><div><dt>Advisory role</dt><dd>Market access &amp; opportunity</dd></div></dl><a className="button button-gold" href="#contact">Discuss this opportunity</a></div></article></section><section className="why section-ivory"><div className="section-number">08 / WHY FOUR PILLARS</div><div className="section-heading"><h2>The value is in the <em>connection.</em></h2></div><div className="principles">{[["Market knowledge", "Understanding the commercial environment before recommending a direction."], ["Relevant connections", "Access to relationships that can create practical opportunities."], ["Strategic clarity", "Turning complex markets and opportunities into clear next steps."], ["Execution focus", "Moving from conversation to action."]].map(([title, text], i) => <article key={title}><span>0{i + 1}</span><h3>{title}</h3><p>{text}</p></article>)}</div></section><section className="final-cta section-dark" id="contact"><p className="eyebrow">Begin a conversation</p><h2>Your next market<br />could be <em>closer</em> than you think.</h2><p>Tell us where you want to go, what you want to build, or which opportunity you are exploring. Four Pillars Business Advisory can help define the next move.</p><div className="hero-actions"><a className="button button-gold" href="mailto:hello@fourpillars.ae">Schedule a consultation</a><a className="button button-ghost" href="mailto:hello@fourpillars.ae">Contact Four Pillars</a></div><span className="domain">fourpillars.ae</span></section><footer><a href="#top" className="footer-brand" aria-label="Four Pillars Business Advisory home"><img src={logo} alt="Four Pillars Business Advisory" /></a><div className="footer-links"><div><span>Explore</span><a href="#about">About</a><a href="#services">Services</a><a href="#real-estate">Real Estate</a></div><div><span>Connect</span><a href="#projects">Projects</a><a href="#contact">Schedule a Consultation</a><a href="mailto:hello@fourpillars.ae">hello@fourpillars.ae</a></div></div><div className="footer-bottom"><span>© 2026 Four Pillars Business Advisory. All rights reserved.</span><span>fourpillars.ae</span></div></footer></main>
 }
