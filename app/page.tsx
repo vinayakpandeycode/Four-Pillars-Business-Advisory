@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from 'react'
 
-const logo = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-09-12%20at%2018.39.51-1YxXhTTwiizkltJRNDFBHrpQ3IakoJ.jpeg'
+const logo = '/assets/four-pillars-meraki-logo.jpeg'
 const videoSrc = '/assets/meraki-walkthrough.mp4'
 
 const pillars = [
@@ -64,7 +64,7 @@ export default function Page() {
         </video>
         <div className="hero-wash" />
         <header className="site-header">
-          <a href="#top" className="wordmark" aria-label="Four Pillars Business Advisory home"><span>FOUR</span><b>PILLARS</b></a>
+          <a href="#top" className="brand-logo" aria-label="Four Pillars Business Advisory home"><img src={logo} alt="Meraki Four Pillars" /></a>
           <nav className={menuOpen ? 'nav-links is-open' : 'nav-links'} aria-label="Primary navigation">
             <a href="#approach" onClick={() => setMenuOpen(false)}>Approach</a><a href="#pillars" onClick={() => setMenuOpen(false)}>Framework</a><a href="#services" onClick={() => setMenuOpen(false)}>Services</a><a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
           </nav>
@@ -91,7 +91,7 @@ export default function Page() {
 
       <section className="contact section-green" id="contact"><div className="contact-heading"><p className="eyebrow gold">Make an enquiry</p><h2>Let&apos;s make<br /><em>it meaningful.</em></h2><p>Tell us a little about where you are and where you want to go.</p></div>{sent ? <div className="form-success"><span>Thank you.</span><p>Your enquiry has been received. We&apos;ll be in touch shortly.</p></div> : <form onSubmit={submit}><label>Name<input required name="name" placeholder="Your name" /></label><label>Email<input required type="email" name="email" placeholder="you@company.com" /></label><label>How can we help?<textarea required name="message" placeholder="A little about your enquiry" rows={3} /></label><button className="solid-button" type="submit">Send enquiry <span>↗</span></button></form>}</section>
 
-      <footer><a href="#top" className="wordmark footer-mark"><span>FOUR</span><b>PILLARS</b></a><div className="footer-details"><p>Business Advisory<br />Dubai · UAE</p><a href="mailto:hello@fourpillars.ae">hello@fourpillars.ae</a><a href="https://fourpillars.ae">fourpillars.ae</a></div><p className="copyright">© {new Date().getFullYear()} Four Pillars Business Advisory</p></footer>
+      <footer><a href="#top" className="brand-logo footer-mark" aria-label="Four Pillars Business Advisory home"><img src={logo} alt="Meraki Four Pillars" /></a><div className="footer-details"><p>Business Advisory<br />Dubai · UAE</p><a href="mailto:hello@fourpillars.ae">hello@fourpillars.ae</a><a href="https://fourpillars.ae">fourpillars.ae</a></div><p className="copyright">© {new Date().getFullYear()} Four Pillars Business Advisory</p></footer>
     </main>
   )
 }
