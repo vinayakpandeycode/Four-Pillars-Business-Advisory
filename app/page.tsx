@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useRef, useState } from 'react'
 
 const logo = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202026-09-12%20at%2018.39.51-1YxXhTTwiizkltJRNDFBHrpQ3IakoJ.jpeg'
-const videoSrc = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/compressed-Meraki_Walkthrough-DfYZFtOjhRyO5aIYAv5neP2Lbuzl6x.mp4'
+const videoSrc = '/assets/meraki-walkthrough.mp4'
 
 const pillars = [
   ['01', 'Strategy', 'Clarity before action. We define the decisions, priorities and path that move your business forward.'],
@@ -25,10 +25,18 @@ export default function Page() {
     if (!video) return
     const onPlaying = () => setPlaying(true)
     const onPause = () => setPlaying(false)
+    const retryPlayback = () => {
+      video.play().catch(() => setPlaying(false))
+    }
     video.addEventListener('playing', onPlaying)
     video.addEventListener('pause', onPause)
+    video.addEventListener('pointerdown', retryPlayback, { once: true })
     video.play().catch(() => setPlaying(false))
-    return () => { video.removeEventListener('playing', onPlaying); video.removeEventListener('pause', onPause) }
+    return () => {
+      video.removeEventListener('playing', onPlaying)
+      video.removeEventListener('pause', onPause)
+      video.removeEventListener('pointerdown', retryPlayback)
+    }
   }, [])
 
   const togglePlayback = () => {
